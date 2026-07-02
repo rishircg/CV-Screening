@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlindHire</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="wrap">
+      <p class="eyebrow">Redaction Capabilities</p>
+      <div class="redaction-strip" aria-hidden="true">
+        <span class="clear">Name</span><span class="bar"></span>
+        <span class="clear">Email</span><span class="bar bar-wide"></span>
+        <span class="clear">Phone</span><span class="bar"></span>
+        <span class="clear">Photo</span><span class="bar bar-wide"></span>
+      </div>
+      <p class="eyebrow">CV Screening Pipeline · local &amp; private</p>
+      <h1>BlindHire</h1>
+      <p class="dek">
+        Upload a job description and a batch of CVs. Each candidate's information is redacted, classified into
+        five categories, and scored against the role. Then, it is ranked with a rationale you can check.
+      </p>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <section id="error-banner" class="banner" role="alert" hidden></section>
+
+    <section id="intake-panel" class="panel">
+      <p class="eyebrow">Intake</p>
+      <form id="intake-form" enctype="multipart/form-data" novalidate>
+
+        <div class="field">
+          <label class="field-label" for="job-description-input">Job description</label>
+          <p class="field-hint">One .txt file describing the role and its requirements.</p>
+          <input
+            class="file-input"
+            type="file"
+            id="job-description-input"
+            name="job_description"
+            accept=".txt"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="cv-input">Candidate CVs</label>
+          <p class="field-hint">Select every candidate you want screened against this role — one .txt file each.</p>
+          <input
+            class="file-input"
+            type="file"
+            id="cv-input"
+            name="cvs"
+            accept=".txt"
+            multiple
+            required
+          />
+          <p id="cv-file-list" class="file-list" aria-live="polite"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submit-btn">Run screening</button>
+      </form>
+    </section>
+
+    <section id="loading-panel" class="panel" hidden aria-live="polite">
+      <div class="redaction-loader" aria-hidden="true">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+      <p id="loading-status" class="loading-status">Reading files…</p>
+      <p class="field-hint">
+        This runs on your local model, so it can take a few minutes for larger batches. Leave this tab open.
+      </p>
+    </section>
+
+    <section id="results-panel" class="panel" hidden>
+
+      <div class="results-summary">
+        <div>
+          <p class="eyebrow">Results</p>
+          <p id="results-count" class="results-count"></p>
+          <p class="weights-legend">
+            Weighted — Experiences 30% · Skills 25% · Projects 20% · Education 15% · Extra Curricular 10%
+          </p>
+        </div>
+        <div class="download-row">
+          <button type="button" class="btn btn-secondary" id="download-results-btn">Download results (.json)</button>
+          <button type="button" class="btn btn-secondary" id="download-contacts-btn">Download contact info (.json)</button>
+        </div>
+      </div>
+
+      <div id="notes-panel" class="notes-panel" hidden>
+        <p class="eyebrow">Excluded from ranking</p>
+        <ul id="notes-list" class="notes-list"></ul>
+      </div>
+
+      <ol id="candidate-list" class="candidate-list"></ol>
+
+      <button type="button" class="btn btn-ghost" id="reset-btn">Screen another batch</button>
+    </section>
+
+  </main>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
